@@ -87,7 +87,7 @@ else if (opts.directory && opts.outdir) {
                     throw err;
                 }
             }
-            fs.writeFileSync(outFilePath, output);
+            fs.writeFileSync(outFilePath, output.toString());
         });
     });
 }
