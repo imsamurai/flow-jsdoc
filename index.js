@@ -179,13 +179,14 @@ function getCommentedFunctionNode(node) {
     var nodeTypes = [
         "FunctionDeclaration", "ExpressionStatement", "VariableDeclaration",
         "MethodDefinition", "Property", "ReturnStatement", "ArrowFunctionExpression",
-        "ExportNamedDeclaration"
+        "ExportNamedDeclaration", "ClassDeclaration"
     ];
     if (nodeTypes.indexOf(node.type) === -1) {
         return null;
     }
     var funcNode = null;
     switch (node.type) {
+        case "ClassDeclaration":
         case "FunctionDeclaration":
         case "ArrowFunctionExpression":
             funcNode = node;
@@ -214,7 +215,7 @@ function getCommentedFunctionNode(node) {
             }
             break;
     }
-    var funcNodeTypes = ["FunctionDeclaration", "FunctionExpression", "ArrowFunctionExpression"];
+    var funcNodeTypes = ["FunctionDeclaration", "FunctionExpression", "ArrowFunctionExpression", "ClassDeclaration"];
     if (!funcNode || funcNodeTypes.indexOf(funcNode.type) === -1) {
         // We can't find a function here which can map to leadingComments.
         return null;
@@ -227,6 +228,7 @@ function getCommentedFunctionNode(node) {
             if (funcDocs) { break; }
             // may be inline form with /* */
             funcDocs = extractInlineAnnotations(funcNode, node.leadingComments[i].value);
+
             if (funcDocs) {
                 node.leadingComments[i].update("");
                 break;
@@ -254,15 +256,21 @@ function getCommentedFunctionNode(node) {
  * @return {?Object} An object with "jsdoc" and "node" keys, or null.
  */
 function getCommentedClassNode(node) {
-    if (node.type !== "ClassBody") {
+    if (node.type !== "ClassBody" && node.type !== "ClassDeclaration") {
         return null;
     }
+
     // look for a constructor() and then look for property tags which we can annotate with.
     var constructNode = null;
     for (var i = 0; i < node.body.length; i++) {
         if (node.body[i].kind === "constructor" && node.body[i].type === "MethodDefinition") {
             constructNode = node.body[i];
         }
+    }
+
+    if (node.type === "ClassDeclaration") {
+        constructNode = node;
+        node = node.body;
     }
 
     if (!constructNode || !constructNode.leadingComments) {
@@ -289,7 +297,7 @@ function getCommentedClassNode(node) {
 function decorateFunctions(node) {
     var i;
     var funcNode = getCommentedFunctionNode(node);
-    if (!funcNode || !funcNode.jsdoc) {
+    if (!funcNode || !funcNode.jsdoc || !funcNode.node.params) {
         return;
     }
 
