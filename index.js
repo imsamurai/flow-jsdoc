@@ -179,14 +179,13 @@ function getCommentedFunctionNode(node) {
     var nodeTypes = [
         "FunctionDeclaration", "ExpressionStatement", "VariableDeclaration",
         "MethodDefinition", "Property", "ReturnStatement", "ArrowFunctionExpression",
-        "ExportNamedDeclaration", "ClassDeclaration"
+        "ExportNamedDeclaration"
     ];
     if (nodeTypes.indexOf(node.type) === -1) {
         return null;
     }
     var funcNode = null;
     switch (node.type) {
-        case "ClassDeclaration":
         case "FunctionDeclaration":
         case "ArrowFunctionExpression":
             funcNode = node;
@@ -215,7 +214,7 @@ function getCommentedFunctionNode(node) {
             }
             break;
     }
-    var funcNodeTypes = ["FunctionDeclaration", "FunctionExpression", "ArrowFunctionExpression", "ClassDeclaration"];
+    var funcNodeTypes = ["FunctionDeclaration", "FunctionExpression", "ArrowFunctionExpression"];
     if (!funcNode || funcNodeTypes.indexOf(funcNode.type) === -1) {
         // We can't find a function here which can map to leadingComments.
         return null;
