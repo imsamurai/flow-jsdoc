@@ -9,6 +9,7 @@ function jsdocTagToFlowTag(tag) {
     // console.log(util.inspect(tag));
     return {
         loc: tag.title, //param|return
+        description: tag.description, //param|return
         name: tag.name, // the parameter name
         type: jsdocTypeToFlowType(tag.type) // the parameter type
     };
@@ -38,10 +39,15 @@ function extractJsdoc(comment) {
         return tag.title === "property" || tag.title === "prop";
     }).map(jsdocTagToFlowTag);
 
+    var enumTags = docAst.tags.filter(function(tag) {
+        return tag.title === "enum";
+    }).map(jsdocTagToFlowTag);
+
     return {
         params: paramTags,
         returns: returnTags,
-        props: propTags
+        props: propTags,
+        enums: enumTags
     };
 }
 
@@ -255,7 +261,8 @@ function getCommentedFunctionNode(node) {
  * @return {?Object} An object with "jsdoc" and "node" keys, or null.
  */
 function getCommentedClassNode(node) {
-    if (node.type !== "ClassBody" && node.type !== "ClassDeclaration") {
+    const nodeType = node.type;
+    if (nodeType !== "ClassBody" && nodeType !== "ClassDeclaration") {
         return null;
     }
 
@@ -267,7 +274,7 @@ function getCommentedClassNode(node) {
         }
     }
 
-    if (node.type === "ClassDeclaration") {
+    if (nodeType === "ClassDeclaration") {
         constructNode = node;
     }
 
@@ -277,7 +284,7 @@ function getCommentedClassNode(node) {
 
     let leadingComments = constructNode.leadingComments;
 
-    if (node.type === "ClassDeclaration") {
+    if (nodeType === "ClassDeclaration") {
         node = node.body;
         // skip all comments before actial class jsdoc
         leadingComments = [constructNode.leadingComments[constructNode.leadingComments.length - 1]];
@@ -292,10 +299,44 @@ function getCommentedClassNode(node) {
             break;
         }
     }
+    if (nodeType === "ClassDeclaration") {
+        applyClassNodeStaticPropertyTransformation(constructNode, constructDocs);
+    }
     return {
         node: node,
         jsdoc: constructDocs
     };
+}
+
+function applyClassNodeStaticPropertyTransformation(constructNode, constructDocs) {
+    if (constructDocs.enums.length > 1) {
+        console.error(constructNode.source());
+        console.error(constructDocs);
+        throw new Error("Enum must be only one!")
+    }
+
+    // make all props static and same type if enum tag found
+    if (constructDocs.enums.length > 0) {
+        const {type} = constructDocs.enums[0];
+        constructDocs.props.forEach(
+            item => {
+                item.name = `static ${item.name}`;
+                if (item.type !== type) {
+                    console.error(constructNode.source());
+                    console.error(constructDocs);
+                    throw new Error(`All properties must be type of ${type}!`)
+                }
+            }
+        );
+    }
+    // if @static found in prop description make props static
+    else {
+        constructDocs.props.filter(
+            item => item.description && item.description.match(/@static/i)
+        ).forEach(
+            item => item.name = `static ${item.name}`
+        );
+    }
 }
 
 /*

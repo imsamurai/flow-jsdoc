@@ -10,9 +10,9 @@
 
 /**
  * @property {string} one
- * @property {number} two
+ * @property {number} two @static Static property
  */
 class Foo {
 one: string;
-two: number;
+static two: number;
 }
