@@ -270,18 +270,26 @@ function getCommentedClassNode(node) {
 
     if (node.type === "ClassDeclaration") {
         constructNode = node;
-        node = node.body;
     }
 
     if (!constructNode || !constructNode.leadingComments) {
         return null;
     }
 
+    let leadingComments = constructNode.leadingComments;
+
+    if (node.type === "ClassDeclaration") {
+        node = node.body;
+        // skip all comments before actial class jsdoc
+        leadingComments = [constructNode.leadingComments[constructNode.leadingComments.length - 1]];
+    }
+
     // check for @property JSDoc on the constructor
     var constructDocs = null;
-    for (var i=0; i<constructNode.leadingComments.length; i++) {
-        if (constructNode.leadingComments[i].type === "Block") {
-            constructDocs = extractJsdoc(constructNode.leadingComments[i].value);
+
+    for (var i=0; i<leadingComments.length; i++) {
+        if (leadingComments[i].type === "Block") {
+            constructDocs = extractJsdoc(leadingComments[i].value);
             break;
         }
     }
