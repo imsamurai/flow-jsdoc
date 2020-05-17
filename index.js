@@ -299,7 +299,7 @@ function getCommentedClassNode(node) {
             break;
         }
     }
-    if (nodeType === "ClassDeclaration") {
+    if (nodeType === "ClassDeclaration" && constructDocs) {
         applyClassNodeStaticPropertyTransformation(constructNode, constructDocs);
     }
     return {
