@@ -339,6 +339,19 @@ function applyClassNodeStaticPropertyTransformation(constructNode, constructDocs
     }
 }
 
+/**
+ * Used to check trailing and leading comments for flow comment syntax to not override them with jsdoc
+ *
+ * @param {Array<Object>} comments
+ * @return {boolean}
+ */
+function isContainFlowComment(comments) {
+    if (!comments || comments.length !== 1) {
+        return false;
+    }
+    return comments[0].value.startsWith(":");
+}
+
 /*
  * Modify function signatures with flow syntax if there is JSDoc for said signature.
  */
@@ -367,7 +380,7 @@ function decorateFunctions(node) {
                     );
                 }
             } else {
-                if (funcNode.jsdoc.params[i].name === param.name) {
+                if (funcNode.jsdoc.params[i].name === param.name && !isContainFlowComment(param.trailingComments)) {
                     param.update(
                         param.source() + ": " + funcNode.jsdoc.params[i].type
                     );
@@ -379,7 +392,7 @@ function decorateFunctions(node) {
     // Pair up the return value if possible
     // we only support 1 return type currently
     var returnDoc = funcNode.jsdoc.returns[0];
-    if (returnDoc && returnDoc.type && funcNode.node.body) {
+    if (returnDoc && returnDoc.type && funcNode.node.body && !isContainFlowComment(funcNode.node.body.leadingComments)) {
         if (funcNode.node.type === "ArrowFunctionExpression") {
             // we can't just add this to the end as it will then appear AFTER the =>
             // whereas we actually want it BEFORE the =>
