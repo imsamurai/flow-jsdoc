@@ -329,8 +329,21 @@ function applyClassNodeStaticPropertyTransformation(constructNode, constructDocs
             }
         );
     }
-    // if @static found in prop description make props static
+
     else {
+        // if @+ found in prop description make props readable
+        constructDocs.props.filter(
+            item => item.description && item.description.match(/\@\+/i)
+        ).forEach(
+            item => item.name = `+${item.name}`
+        );
+        // if @- found in prop description make props writable
+        constructDocs.props.filter(
+            item => item.description && item.description.match(/\@\-/i)
+        ).forEach(
+            item => item.name = `-${item.name}`
+        );
+        // if @static found in prop description make props static
         constructDocs.props.filter(
             item => item.description && item.description.match(/@static/i)
         ).forEach(
