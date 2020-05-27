@@ -145,3 +145,10 @@ There are plans for this tool to (roughly in priority order):
  * **Auto-require()ing types you reference in other files if you don't import them yourself.** When you start type-annotating, sometimes you'll declare a type that is defined in another file but you won't need to require() it manually (e.g. because it's just passed as a function argument). Flow *needs* to know where the type is declared, so you need to import it somehow even if it's a no-op in the code. This tool should be able to automatically do this.
  * Handle type definitions `@typedef`
  * Handle callback type resolution (mapping `@callback` sensibly)
+
+# Improvements and features
+* @property in class comment are now used
+* @enum in class comment makes all @property static if they have same with enum type, otherwise throw error
+* @+ in class comment @property description makes property readable
+* @- in class comment @property description makes property writable
+* @static in class comment @property description makes property static
