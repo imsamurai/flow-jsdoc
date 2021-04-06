@@ -127,7 +127,7 @@ function jsdocTypeToFlowType(jsdocType) {
     }
     switch(jsdocType.type) {
         case "RecordType": // {x:string, y: number}
-            return "{" + jsdocType.fields.map((f) => `${f.key}: ${f.value.name}`).join(", ") + "}";
+            return "{" + jsdocType.fields.map((f) => `${f.key}: ${jsdocTypeToFlowType(f.value)}`).join(", ") + "}";
         case "NameExpression": // {string}
             return jsdocType.name;
         case "TypeApplication": // {Foo<Bar,Baz>}

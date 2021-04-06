@@ -22,10 +22,10 @@ class Foo {
     }
 
     /**
-     * @param {Promise<{x:number, y: string}>} one
-     * @returns {Promise<{x:number, y: string}>}
+     * @param {Promise<{x:number, y: {z: number}}>} one
+     * @returns {Promise<{x:number, y: {z: number}}>}
      */
-    f2(one: Promise<{x: number, y: string}>) : Promise<{x: number, y: string}> {
+    f2(one: Promise<{x: number, y: {z: number}}>) : Promise<{x: number, y: {z: number}}> {
 
     }
 }
