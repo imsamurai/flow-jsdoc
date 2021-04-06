@@ -18,4 +18,12 @@ class Foo {
     f2(one) {
 
     }
+
+    /**
+     * @param {Promise<{x:number, y: string}>} one
+     * @returns {Promise<{x:number, y: string}>}
+     */
+    f2(one) {
+
+    }
 }

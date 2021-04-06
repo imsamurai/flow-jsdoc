@@ -20,4 +20,12 @@ class Foo {
     f2(one: Promise<any>) : Promise<any> {
 
     }
+
+    /**
+     * @param {Promise<{x:number, y: string}>} one
+     * @returns {Promise<{x:number, y: string}>}
+     */
+    f2(one: Promise<{x: number, y: string}>) : Promise<{x: number, y: string}> {
+
+    }
 }
