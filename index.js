@@ -128,13 +128,15 @@ function jsdocTypeToFlowType(jsdocType) {
     switch(jsdocType.type) {
         case "NameExpression": // {string}
             return jsdocType.name;
-        case "TypeApplication": // {Foo<Bar>}
+        case "TypeApplication": // {Foo<Bar,Baz>}
             // e.g. 'Array' in Array<String>
             var baseType = jsdocTypeToFlowType(jsdocType.expression);
             // Flow only supports single types for generics
-            var specificType = jsdocTypeToFlowType(jsdocType.applications[0]);
-            if (baseType && specificType) {
-                return baseType + "<" + specificType + ">";
+            var specificTypes = jsdocType.applications.map(
+                (t) => jsdocTypeToFlowType(t)
+            );
+            if (baseType && specificTypes.length) {
+                return baseType + "<" + specificTypes.join(", ") + ">";
             }
             break;
         case "UnionType": // {(Object|String)}
