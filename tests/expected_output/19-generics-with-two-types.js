@@ -25,7 +25,15 @@ class Foo {
      * @param {Promise<{x:number, y: {z: number}}>} one
      * @returns {Promise<{x:number, y: {z: number}}>}
      */
-    f2(one: Promise<{x: number, y: {z: number}}>) : Promise<{x: number, y: {z: number}}> {
+    f3(one: Promise<{x: number, y: {z: number}}>) : Promise<{x: number, y: {z: number}}> {
+
+    }
+
+    /**
+     * @param {Promise<undefined>} one
+     * @returns {Promise<undefined>}
+     */
+    f4(one: Promise<undefined>) : Promise<undefined> {
 
     }
 }
