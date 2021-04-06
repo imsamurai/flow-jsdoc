@@ -126,6 +126,11 @@ function jsdocTypeToFlowType(jsdocType) {
         return;
     }
     switch(jsdocType.type) {
+        case "FunctionType": // function(x:number,y:string): boolean
+            const args = jsdocType.params.map(
+                (p) => `${p.name}: ${jsdocTypeToFlowType(p.expression)}`
+            );
+            return `(${args.join(", ")}) => ${jsdocTypeToFlowType(jsdocType.result)}`;
         case "RecordType": // {x:string, y: number}
             return "{" + jsdocType.fields.map((f) => `${f.key}: ${jsdocTypeToFlowType(f.value)}`).join(", ") + "}";
         case "NameExpression": // {string}
@@ -149,7 +154,8 @@ function jsdocTypeToFlowType(jsdocType) {
         case "AllLiteral": // {*}
             return "any";
         case "UndefinedLiteral": // undefined
-            return "undefined";
+            console.error("Convert to \"void\": %s", JSON.stringify(jsdocType));
+            return "void";
         case "OptionalType": // {string=}
         case "NullableType": // {?string}
             return "?" + jsdocTypeToFlowType(jsdocType.expression);

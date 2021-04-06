@@ -33,7 +33,23 @@ class Foo {
      * @param {Promise<undefined>} one
      * @returns {Promise<undefined>}
      */
-    f4(one: Promise<undefined>) : Promise<undefined> {
+    f4(one: Promise<void>) : Promise<void> {
+
+    }
+
+    /**
+     * @param {Promise<function(x:number,y:string): boolean>} one
+     * @returns {Promise<function(x:number,y:string): boolean>}
+     */
+    f5(one: Promise<(x: number, y: string) => boolean>) : Promise<(x: number, y: string) => boolean> {
+
+    }
+
+    /**
+     * @param {function(x:number,y:string): boolean} one
+     * @returns {function(x:number,y:string): boolean}
+     */
+    f6(one: (x: number, y: string) => boolean) : (x: number, y: string) => boolean {
 
     }
 }

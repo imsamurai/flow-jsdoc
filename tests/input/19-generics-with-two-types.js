@@ -34,4 +34,20 @@ class Foo {
     f4(one) {
 
     }
+
+    /**
+     * @param {Promise<function(x:number,y:string): boolean>} one
+     * @returns {Promise<function(x:number,y:string): boolean>}
+     */
+    f5(one) {
+
+    }
+
+    /**
+     * @param {function(x:number,y:string): boolean} one
+     * @returns {function(x:number,y:string): boolean}
+     */
+    f6(one) {
+
+    }
 }
