@@ -413,7 +413,7 @@ function decorateFunctions(node) {
                 }
             } else if (param.type === 'RestElement') {
                 const subparam = param.argument;
-                if (funcNode.jsdoc.params[i].name === subparam.name && !isContainFlowComment(subparam.trailingComments)) {
+                if (funcNode.jsdoc.params[i].name === subparam.name && !isContainFlowComment(subparam.trailingComments) && !isContainFlowComment(param.trailingComments)) {
                     subparam.update(
                         subparam.source() + ": " + funcNode.jsdoc.params[i].type
                     );
