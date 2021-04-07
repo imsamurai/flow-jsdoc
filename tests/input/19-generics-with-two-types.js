@@ -50,4 +50,12 @@ class Foo {
     f6(one) {
 
     }
+
+    /**
+     * @param {function(number, Array<string>, {x: boolean}, function(number, Array<string>): boolean): boolean} one
+     * @returns {function(number, Array<string>, {x: boolean}, function(number, Array<string>): boolean): boolean}
+     */
+    f7(one) {
+
+    }
 }

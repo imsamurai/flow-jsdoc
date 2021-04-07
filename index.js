@@ -126,11 +126,18 @@ function jsdocTypeToFlowType(jsdocType) {
         return;
     }
     switch(jsdocType.type) {
-        case "FunctionType": // function(x:number,y:string): boolean
+        case "FunctionType":
             const args = jsdocType.params.map(
-                (p) => `${p.name}: ${jsdocTypeToFlowType(p.expression)}`
+                (p, i) => {
+                    if (p.type === "ParameterType") { // function(x:number,y:string): boolean
+                        return `${p.name}: ${jsdocTypeToFlowType(p.expression)}`;
+                    } // function(number,string): boolean
+                    return `${p.type}${i}: ${jsdocTypeToFlowType(p)}`;
+                }
             );
             return `(${args.join(", ")}) => ${jsdocTypeToFlowType(jsdocType.result)}`;
+        case "RestType": // ...string
+            return `Array<${jsdocTypeToFlowType(jsdocType.expression)}>`;
         case "RecordType": // {x:string, y: number}
             return "{" + jsdocType.fields.map((f) => `${f.key}: ${jsdocTypeToFlowType(f.value)}`).join(", ") + "}";
         case "NameExpression": // {string}
@@ -402,6 +409,13 @@ function decorateFunctions(node) {
 
                     param.update(
                         param.left.source() + ": " + type + ' = ' + param.right.source()
+                    );
+                }
+            } else if (param.type === 'RestElement') {
+                const subparam = param.argument;
+                if (funcNode.jsdoc.params[i].name === subparam.name && !isContainFlowComment(subparam.trailingComments)) {
+                    subparam.update(
+                        subparam.source() + ": " + funcNode.jsdoc.params[i].type
                     );
                 }
             } else {

@@ -52,4 +52,12 @@ class Foo {
     f6(one: (x: number, y: string) => boolean) : (x: number, y: string) => boolean {
 
     }
+
+    /**
+     * @param {function(number, Array<string>, {x: boolean}, function(number, Array<string>): boolean): boolean} one
+     * @returns {function(number, Array<string>, {x: boolean}, function(number, Array<string>): boolean): boolean}
+     */
+    f7(one: (NameExpression0: number, TypeApplication1: Array<string>, RecordType2: {x: boolean}, FunctionType3: (NameExpression0: number, TypeApplication1: Array<string>) => boolean) => boolean) : (NameExpression0: number, TypeApplication1: Array<string>, RecordType2: {x: boolean}, FunctionType3: (NameExpression0: number, TypeApplication1: Array<string>) => boolean) => boolean {
+
+    }
 }
