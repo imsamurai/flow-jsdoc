@@ -439,7 +439,8 @@ function decorateFunctions(node) {
             // however know that the node source is the entire function, and the node
             // body is the stuff between the { }. We can therefore grab the function
             // header portion and find/replace on the fat arrow.
-            var funcHeader = funcNode.node.source().replace(funcNode.node.body.source(), "");
+            const funcBody = funcNode.node.body.type === "ObjectExpression" ? `(${funcNode.node.body.source()})` : funcNode.node.body.source();
+            var funcHeader = funcNode.node.source().replace(funcBody, "");
             var arrowIndex = funcHeader.lastIndexOf("=>");
             if (arrowIndex === -1) {
                 // well this was unexpected...
@@ -451,7 +452,7 @@ function decorateFunctions(node) {
             );
             // replace the entire function to replace the header portion
             funcNode.node.update(
-                funcHeader + funcNode.node.body.source()
+                funcHeader + funcBody
             );
         }
         else {
