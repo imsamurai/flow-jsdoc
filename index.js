@@ -163,6 +163,9 @@ function jsdocTypeToFlowType(jsdocType) {
         case "UndefinedLiteral": // undefined
             console.error("Convert to \"void\": %s", JSON.stringify(jsdocType));
             return "void";
+        case "NullLiteral": // null
+            console.error("Convert to \"void\": %s", JSON.stringify(jsdocType));
+            return "void";
         case "OptionalType": // {string=}
         case "NullableType": // {?string}
             return "?" + jsdocTypeToFlowType(jsdocType.expression);
