@@ -130,7 +130,7 @@ function jsdocTypeToFlowType(jsdocType) {
             const args = jsdocType.params.map(
                 (p, i) => {
                     if (p.type === "ParameterType") { // function(x:number,y:string): boolean
-                        return `${p.name}: ${jsdocTypeToFlowType(p.expression)}`;
+                        return `"${p.name.replace(/"/g, "\\\"")}": ${jsdocTypeToFlowType(p.expression)}`;
                     } // function(number,string): boolean
                     return `${p.type}${i}: ${jsdocTypeToFlowType(p)}`;
                 }
@@ -139,7 +139,7 @@ function jsdocTypeToFlowType(jsdocType) {
         case "RestType": // ...string
             return `Array<${jsdocTypeToFlowType(jsdocType.expression)}>`;
         case "RecordType": // {x:string, y: number}
-            return "{" + jsdocType.fields.map((f) => `${f.key}: ${jsdocTypeToFlowType(f.value)}`).join(", ") + "}";
+            return "{" + jsdocType.fields.map((f) => `"${f.key.replace(/"/g, "\\\"")}": ${jsdocTypeToFlowType(f.value)}`).join(", ") + "}";
         case "NameExpression": // {string}
             return jsdocType.name;
         case "TypeApplication": // {Foo<Bar,Baz>}
